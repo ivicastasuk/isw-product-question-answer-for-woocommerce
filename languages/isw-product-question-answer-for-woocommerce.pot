@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ISW Product Question and Answer for WooCommerce 1.2.0\n"
 "Report-Msgid-Bugs-To: https://isw-team.com\n"
-"POT-Creation-Date: 2025-01-01 12:00+0000\n"
+"POT-Creation-Date: 2025-01-10 12:00+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -15,19 +15,129 @@ msgstr ""
 "X-Generator: WordPress\n"
 "X-Domain: isw-product-question-answer-for-woocommerce\n"
 
+#: isw-product-question-answer-for-woocommerce.php:59
+msgid "ISW Product Q&A requires WordPress version 5.0 or higher."
+msgstr ""
+
+#: isw-product-question-answer-for-woocommerce.php:60
+msgid "Plugin Error"
+msgstr ""
+
+#: isw-product-question-answer-for-woocommerce.php:69
+msgid "ISW Product Q&A requires PHP version 7.4 or higher."
+msgstr ""
+
+#: isw-product-question-answer-for-woocommerce.php:79
+msgid "ISW Product Q&A requires WooCommerce to be installed and activated."
+msgstr ""
+
+#: isw-product-question-answer-for-woocommerce.php:102
+msgid "ISW Product Q&A requires %s to work properly. Please install and activate WooCommerce."
+msgstr ""
+
+#: isw-product-question-answer-for-woocommerce.php:135
+msgid "Questions & Answers"
+msgstr ""
+
+#: isw-product-question-answer-for-woocommerce.php:145
+msgid "Ask a Question"
+msgstr ""
+
+#: isw-product-question-answer-for-woocommerce.php:146
+msgid "Submit"
+msgstr ""
+
+#: isw-product-question-answer-for-woocommerce.php:147
+msgid "Cancel"
+msgstr ""
+
+#: isw-product-question-answer-for-woocommerce.php:148
+msgid "Load More..."
+msgstr ""
+
+#: isw-product-question-answer-for-woocommerce.php:163
+msgid "Your question..."
+msgstr ""
+
+#: isw-product-question-answer-for-woocommerce.php:170
+msgid "You must be logged in to ask a question."
+msgstr ""
+
+#: isw-product-question-answer-for-woocommerce.php:190
+msgid "Answer"
+msgstr ""
+
+#: isw-product-question-answer-for-woocommerce.php:198
+msgid "Answer has been saved."
+msgstr ""
+
+#: isw-product-question-answer-for-woocommerce.php:215
+msgid "Question"
+msgstr ""
+
+#: isw-product-question-answer-for-woocommerce.php:227
+msgid "Unknown Product"
+msgstr ""
+
+#: isw-product-question-answer-for-woocommerce.php:231
+msgid "New question on product: %s"
+msgstr ""
+
+#: isw-product-question-answer-for-woocommerce.php:233
+msgid "User %s has asked a new question:"
+msgstr ""
+
+#: isw-product-question-answer-for-woocommerce.php:235
+msgid "Product: %s"
+msgstr ""
+
+#: isw-product-question-answer-for-woocommerce.php:237
+msgid "Question: %s"
+msgstr ""
+
+#: isw-product-question-answer-for-woocommerce.php:238
+msgid "Reply at:"
+msgstr ""
+
+#: isw-product-question-answer-for-woocommerce.php:243
+msgid "Question has been saved."
+msgstr ""
+
+#: isw-product-question-answer-for-woocommerce.php:243
+msgid "Question has been submitted for approval."
+msgstr ""
+
+#: admin.php:58
+msgid "ISW Product Q&A - Question Management"
+msgstr ""
+
 #: admin.php:64
-msgid "Odgovor je uspešno dodat!"
+msgid "Answer has been successfully added!"
 msgstr ""
 
 #: admin.php:67
-msgid "Pitanje je uspešno odobreno!"
+msgid "Question has been successfully approved!"
 msgstr ""
 
 #: admin.php:70
-msgid "Pitanje je uspešno obrisano!"
+msgid "Question has been successfully deleted!"
 msgstr ""
 
-#: admin.php:78
+#: admin.php:105
+msgid "Settings"
+msgstr ""
+
+#: admin.php:112
+msgid "All Questions"
+msgstr ""
+
+#: admin.php:113
+msgid "Answered"
+msgstr ""
+
+#: admin.php:114
+msgid "Unanswered"
+msgstr ""
 msgid "Greška: Odgovor ne može biti prazan."
 msgstr ""
 

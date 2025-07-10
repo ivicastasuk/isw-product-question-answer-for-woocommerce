@@ -1,0 +1,142 @@
+# Serbian (Serbia) translation for ISW Product Question and Answer for WooCommerce
+# Copyright (C) 2025 ISW Team
+# This file is distributed under the GPL v2 or later.
+msgid ""
+msgstr ""
+"Project-Id-Version: ISW Product Question and Answer for WooCommerce 1.2.0\n"
+"Report-Msgid-Bugs-To: https://isw-team.com\n"
+"POT-Creation-Date: 2025-01-10 12:00+0000\n"
+"PO-Revision-Date: 2025-01-10 12:00+0000\n"
+"Last-Translator: ISW Team\n"
+"Language-Team: Serbian\n"
+"Language: sr_RS\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: WordPress\n"
+"X-Domain: isw-product-question-answer-for-woocommerce\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+#: isw-product-question-answer-for-woocommerce.php:59
+msgid "ISW Product Q&A requires WordPress version 5.0 or higher."
+msgstr "ISW Product Q&A zahteva WordPress verziju 5.0 ili noviju."
+
+#: isw-product-question-answer-for-woocommerce.php:60
+msgid "Plugin Error"
+msgstr "Plugin greška"
+
+#: isw-product-question-answer-for-woocommerce.php:69
+msgid "ISW Product Q&A requires PHP version 7.4 or higher."
+msgstr "ISW Product Q&A zahteva PHP verziju 7.4 ili noviju."
+
+#: isw-product-question-answer-for-woocommerce.php:79
+msgid "ISW Product Q&A requires WooCommerce to be installed and activated."
+msgstr "ISW Product Q&A zahteva instaliran i aktiviran WooCommerce plugin."
+
+#: isw-product-question-answer-for-woocommerce.php:102
+msgid "ISW Product Q&A requires %s to work properly. Please install and activate WooCommerce."
+msgstr "ISW Product Q&A zahteva %s da bi radio ispravno. Molimo instalirajte i aktivirajte WooCommerce."
+
+#: isw-product-question-answer-for-woocommerce.php:135
+msgid "Questions & Answers"
+msgstr "Pitanja i odgovori"
+
+#: isw-product-question-answer-for-woocommerce.php:145
+msgid "Ask a Question"
+msgstr "Postavi pitanje"
+
+#: isw-product-question-answer-for-woocommerce.php:146
+msgid "Submit"
+msgstr "Pošalji"
+
+#: isw-product-question-answer-for-woocommerce.php:147
+msgid "Cancel"
+msgstr "Otkaži"
+
+#: isw-product-question-answer-for-woocommerce.php:148
+msgid "Load More..."
+msgstr "Učitaj još..."
+
+#: isw-product-question-answer-for-woocommerce.php:163
+msgid "Your question..."
+msgstr "Vaše pitanje..."
+
+#: isw-product-question-answer-for-woocommerce.php:170
+msgid "You must be logged in to ask a question."
+msgstr "Morate biti prijavljeni da biste postavili pitanje."
+
+#: isw-product-question-answer-for-woocommerce.php:190
+msgid "Answer"
+msgstr "Odgovor"
+
+#: isw-product-question-answer-for-woocommerce.php:198
+msgid "Answer has been saved."
+msgstr "Odgovor je sačuvan."
+
+#: isw-product-question-answer-for-woocommerce.php:215
+msgid "Question"
+msgstr "Pitanje"
+
+#: isw-product-question-answer-for-woocommerce.php:227
+msgid "Unknown Product"
+msgstr "Nepoznat proizvod"
+
+#: isw-product-question-answer-for-woocommerce.php:231
+msgid "New question on product: %s"
+msgstr "Novo pitanje na proizvodu: %s"
+
+#: isw-product-question-answer-for-woocommerce.php:233
+msgid "User %s has asked a new question:"
+msgstr "Korisnik %s je postavio novo pitanje:"
+
+#: isw-product-question-answer-for-woocommerce.php:235
+msgid "Product: %s"
+msgstr "Proizvod: %s"
+
+#: isw-product-question-answer-for-woocommerce.php:237
+msgid "Question: %s"
+msgstr "Pitanje: %s"
+
+#: isw-product-question-answer-for-woocommerce.php:238
+msgid "Reply at:"
+msgstr "Odgovorite na:"
+
+#: isw-product-question-answer-for-woocommerce.php:243
+msgid "Question has been saved."
+msgstr "Pitanje je sačuvano."
+
+#: isw-product-question-answer-for-woocommerce.php:243
+msgid "Question has been submitted for approval."
+msgstr "Pitanje je poslato na odobravanje."
+
+#: admin.php:58
+msgid "ISW Product Q&A - Question Management"
+msgstr "ISW Product Q&A - Upravljanje pitanjima"
+
+#: admin.php:64
+msgid "Answer has been successfully added!"
+msgstr "Odgovor je uspešno dodat!"
+
+#: admin.php:67
+msgid "Question has been successfully approved!"
+msgstr "Pitanje je uspešno odobreno!"
+
+#: admin.php:70
+msgid "Question has been successfully deleted!"
+msgstr "Pitanje je uspešno obrisano!"
+
+#: admin.php:105
+msgid "Settings"
+msgstr "Postavke"
+
+#: admin.php:112
+msgid "All Questions"
+msgstr "Sva pitanja"
+
+#: admin.php:113
+msgid "Answered"
+msgstr "Odgovorena"
+
+#: admin.php:114
+msgid "Unanswered"
+msgstr "Neodgovorena"

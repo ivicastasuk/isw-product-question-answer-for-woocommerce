@@ -1,10 +1,10 @@
 <?php
 // Settings stranica za ISW Product Q&A plugin
 
-// Registruj settings opcije
+// Register settings options
 add_action('admin_init', 'isw_pqa_register_settings');
 function isw_pqa_register_settings() {
-    // Registruj settings group
+    // Register settings group
     register_setting('isw_pqa_settings', 'isw_pqa_options', array(
         'sanitize_callback' => 'isw_pqa_sanitize_options'
     ));
@@ -337,7 +337,7 @@ function isw_pqa_register_settings() {
     // Button text - Submit Question
     add_settings_field(
         'btn_text_submit_question',
-        'Tekst dugmeta "Pošalji"',
+        'Submit Button Text',
         'isw_pqa_btn_text_submit_question_callback',
         'isw_pqa_settings',
         'isw_pqa_buttons_section'
@@ -355,7 +355,7 @@ function isw_pqa_register_settings() {
     // Button text - Load More
     add_settings_field(
         'btn_text_load_more',
-        'Tekst dugmeta "Učitaj još"',
+        'Load More Button Text',
         'isw_pqa_btn_text_load_more_callback',
         'isw_pqa_settings',
         'isw_pqa_buttons_section'
@@ -469,23 +469,23 @@ function isw_pqa_sanitize_options($input) {
 
 // Callback funkcije za sekcije
 function isw_pqa_general_section_callback() {
-    echo '<p>Osnovne postavke za rad Q&A sistema.</p>';
+    echo '<p>Basic settings for Q&A system operation.</p>';
 }
 
 function isw_pqa_frontend_section_callback() {
-    echo '<p>Osnovne postavke za prikaz na frontend-u.</p>';
+    echo '<p>Basic settings for frontend display.</p>';
 }
 
 function isw_pqa_typography_section_callback() {
-    echo '<p>Postavke tipografije za tekst pitanja i odgovora.</p>';
+    echo '<p>Typography settings for questions and answers text.</p>';
 }
 
 function isw_pqa_background_section_callback() {
-    echo '<p>Postavke pozadine i kontejnera za pitanja i odgovore.</p>';
+    echo '<p>Background and container settings for questions and answers.</p>';
 }
 
 function isw_pqa_buttons_section_callback() {
-    echo '<p>Detaljne postavke izgleda dugmića.</p>';
+    echo '<p>Detailed button appearance settings.</p>';
 }
 
 // Callback funkcije za polja
@@ -528,7 +528,7 @@ function isw_pqa_email_notifications_callback() {
     $options = get_option('isw_pqa_options');
     $value = isset($options['email_notifications']) ? $options['email_notifications'] : 0;
     echo '<input type="checkbox" name="isw_pqa_options[email_notifications]" value="1" ' . checked(1, $value, false) . ' />';
-    echo '<label> Pošalji email administratoru kada se postavi novo pitanje</label>';
+    echo '<label> Send email to administrator when a new question is posted</label>';
 }
 
 // Funkcija za dobijanje opcija sa default vrednostima
@@ -541,14 +541,14 @@ function isw_pqa_get_option($option_name, $default = '') {
 function isw_pqa_settings_page() {
     ?>
     <div class="wrap">
-        <h1>ISW Product Q&A - Postavke</h1>
+        <h1>ISW Product Q&A - Settings</h1>
         
         <!-- Tab navigacija -->
         <h2 class="nav-tab-wrapper">
-            <a href="#general" class="nav-tab nav-tab-active" onclick="switchTab(event, 'general')">Osnovno</a>
-            <a href="#typography" class="nav-tab" onclick="switchTab(event, 'typography')">Tipografija</a>
-            <a href="#containers" class="nav-tab" onclick="switchTab(event, 'containers')">Kontejneri</a>
-            <a href="#buttons" class="nav-tab" onclick="switchTab(event, 'buttons')">Dugmići</a>
+            <a href="#general" class="nav-tab nav-tab-active" onclick="switchTab(event, 'general')">General</a>
+            <a href="#typography" class="nav-tab" onclick="switchTab(event, 'typography')">Typography</a>
+            <a href="#containers" class="nav-tab" onclick="switchTab(event, 'containers')">Containers</a>
+            <a href="#buttons" class="nav-tab" onclick="switchTab(event, 'buttons')">Buttons</a>
             <a href="#info" class="nav-tab" onclick="switchTab(event, 'info')">Info</a>
         </h2>
         
@@ -557,12 +557,12 @@ function isw_pqa_settings_page() {
             
             <!-- General tab -->
             <div id="general" class="tab-content" style="display: block;">
-                <h3>Osnovne postavke</h3>
+                <h3>Basic Settings</h3>
                 <table class="form-table">
                     <?php do_settings_fields('isw_pqa_settings', 'isw_pqa_general_section'); ?>
                 </table>
                 
-                <h3>Frontend postavke</h3>
+                <h3>Frontend Settings</h3>
                 <div class="frontend-settings-block">
                     <?php
                     // Prikaži frontend postavke jedna ispod druge
@@ -592,19 +592,19 @@ function isw_pqa_settings_page() {
             
             <!-- Typography tab -->
             <div id="typography" class="tab-content" style="display: none;">
-                <h3>Tipografija</h3>
+                <h3>Typography</h3>
                 <?php do_settings_fields('isw_pqa_settings', 'isw_pqa_typography_section'); ?>
             </div>
             
             <!-- Containers tab -->
             <div id="containers" class="tab-content" style="display: none;">
-                <h3>Pozadina i kontejneri</h3>
+                <h3>Background and Containers</h3>
                 <?php do_settings_fields('isw_pqa_settings', 'isw_pqa_background_section'); ?>
             </div>
             
             <!-- Buttons tab -->
             <div id="buttons" class="tab-content" style="display: none;">
-                <h3>Dugmići</h3>
+                <h3>Buttons</h3>
                 <?php do_settings_fields('isw_pqa_settings', 'isw_pqa_buttons_section'); ?>
                 
                 <!-- Preview dugmića -->
@@ -644,7 +644,7 @@ function isw_pqa_settings_page() {
             <!-- Info tab -->
             <div id="info" class="tab-content" style="display: none;">
                 <div style="padding: 15px; background: #f1f1f1; border-radius: 5px;">
-                    <h3>Informacije o plugin-u</h3>
+                    <h3>Plugin Information</h3>
                     <p><strong>Verzija:</strong> 1.2</p>
                     <p><strong>Autor:</strong> ISW</p>
                     <p><strong>Opis:</strong> Plugin za dodavanje Q&A funkcionalnosti na WooCommerce proizvode.</p>
@@ -683,7 +683,7 @@ function isw_pqa_settings_page() {
                 </div>
             </div>
             
-            <?php submit_button('Sačuvaj postavke'); ?>
+            <?php submit_button('Save Settings'); ?>
         </form>
         
         <style>
@@ -793,11 +793,11 @@ function isw_pqa_settings_page() {
             var buttonInputs = document.querySelectorAll('input[name^="isw_pqa_options[btn_"], select[name^="isw_pqa_options[btn_"]');
             
             buttonInputs.forEach(function(input, index) {
-                // Ukloni stare listenere
+                // Remove old listeners
                 input.removeEventListener('input', updateButtonPreview);
                 input.removeEventListener('change', updateButtonPreview);
                 
-                // Dodaj nove listenere
+                // Add new listeners
                 input.addEventListener('input', function() {
                     setTimeout(updateButtonPreview, 50);
                 });
@@ -895,9 +895,9 @@ function isw_pqa_settings_page() {
             return element ? element.value : defaultValue;
         }
         
-        // Dodaj event listenere za live preview
+        // Add event listeners for live preview
         document.addEventListener('DOMContentLoaded', function() {
-            // Sačekaj da se svi elementi učitaju
+            // Wait for all elements to load
             setTimeout(function() {
                 initButtonPreview();
             }, 200);
@@ -1237,7 +1237,7 @@ function isw_pqa_btn_text_ask_question_callback() {
 
 function isw_pqa_btn_text_submit_question_callback() {
     $options = get_option('isw_pqa_options');
-    $value = isset($options['btn_text_submit_question']) ? $options['btn_text_submit_question'] : 'Pošalji';
+    $value = isset($options['btn_text_submit_question']) ? $options['btn_text_submit_question'] : 'Submit';
     
     echo '<input type="text" name="isw_pqa_options[btn_text_submit_question]" value="' . esc_attr($value) . '" class="regular-text" />';
     echo '<p class="description">Tekst koji se prikazuje na dugmetu za slanje pitanja.</p>';
@@ -1253,7 +1253,7 @@ function isw_pqa_btn_text_cancel_callback() {
 
 function isw_pqa_btn_text_load_more_callback() {
     $options = get_option('isw_pqa_options');
-    $value = isset($options['btn_text_load_more']) ? $options['btn_text_load_more'] : 'Učitaj još...';
+    $value = isset($options['btn_text_load_more']) ? $options['btn_text_load_more'] : 'Load More...';
     
     echo '<input type="text" name="isw_pqa_options[btn_text_load_more]" value="' . esc_attr($value) . '" class="regular-text" />';
     echo '<p class="description">Tekst koji se prikazuje na dugmetu za učitavanje dodatnih pitanja.</p>';

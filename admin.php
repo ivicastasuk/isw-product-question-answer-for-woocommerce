@@ -55,19 +55,19 @@ add_action('admin_enqueue_scripts', function($hook) {
 
 function isw_pqa_admin_page() {
     echo '<div class="wrap">';
-    echo '<h1>ISW Product Q&A - Upravljanje pitanjima</h1>';
+    echo '<h1>ISW Product Q&A - Question Management</h1>';
     
     // Prikaži poruke o statusu
     if (isset($_GET['success'])) {
         switch ($_GET['success']) {
             case 'answer_added':
-                echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__('Odgovor je uspešno dodat!', 'isw-product-question-answer-for-woocommerce') . '</p></div>';
+                echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__('Answer has been successfully added!', 'isw-product-question-answer-for-woocommerce') . '</p></div>';
                 break;
             case 'question_approved':
-                echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__('Pitanje je uspešno odobreno!', 'isw-product-question-answer-for-woocommerce') . '</p></div>';
+                echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__('Question has been successfully approved!', 'isw-product-question-answer-for-woocommerce') . '</p></div>';
                 break;
             case 'question_deleted':
-                echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__('Pitanje je uspešno obrisano!', 'isw-product-question-answer-for-woocommerce') . '</p></div>';
+                echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__('Question has been successfully deleted!', 'isw-product-question-answer-for-woocommerce') . '</p></div>';
                 break;
         }
     }
@@ -75,26 +75,26 @@ function isw_pqa_admin_page() {
     if (isset($_GET['error'])) {
         switch ($_GET['error']) {
             case 'empty_answer':
-                echo '<div class="notice notice-error is-dismissible"><p>' . esc_html__('Greška: Odgovor ne može biti prazan.', 'isw-product-question-answer-for-woocommerce') . '</p></div>';
+                echo '<div class="notice notice-error is-dismissible"><p>' . esc_html__('Error: Answer cannot be empty.', 'isw-product-question-answer-for-woocommerce') . '</p></div>';
                 break;
             case 'missing_data':
-                echo '<div class="notice notice-error is-dismissible"><p>' . esc_html__('Greška: Nedostaju potrebni podaci.', 'isw-product-question-answer-for-woocommerce') . '</p></div>';
+                echo '<div class="notice notice-error is-dismissible"><p>' . esc_html__('Error: Required data is missing.', 'isw-product-question-answer-for-woocommerce') . '</p></div>';
                 break;
             case 'invalid_question':
-                echo '<div class="notice notice-error is-dismissible"><p>' . esc_html__('Greška: Pitanje ne postoji ili je neispravno.', 'isw-product-question-answer-for-woocommerce') . '</p></div>';
+                echo '<div class="notice notice-error is-dismissible"><p>' . esc_html__('Error: Question does not exist or is invalid.', 'isw-product-question-answer-for-woocommerce') . '</p></div>';
                 break;
             case 'creation_failed':
-                echo '<div class="notice notice-error is-dismissible"><p>' . esc_html__('Greška: Kreiranje odgovora nije uspelo.', 'isw-product-question-answer-for-woocommerce') . '</p></div>';
+                echo '<div class="notice notice-error is-dismissible"><p>' . esc_html__('Error: Answer creation failed.', 'isw-product-question-answer-for-woocommerce') . '</p></div>';
                 break;
             case 'update_failed':
-                echo '<div class="notice notice-error is-dismissible"><p>' . esc_html__('Greška: Ažuriranje pitanja nije uspelo.', 'isw-product-question-answer-for-woocommerce') . '</p></div>';
+                echo '<div class="notice notice-error is-dismissible"><p>' . esc_html__('Error: Question update failed.', 'isw-product-question-answer-for-woocommerce') . '</p></div>';
                 break;
             case 'delete_failed':
-                echo '<div class="notice notice-error is-dismissible"><p>' . esc_html__('Greška: Brisanje pitanja nije uspelo.', 'isw-product-question-answer-for-woocommerce') . '</p></div>';
+                echo '<div class="notice notice-error is-dismissible"><p>' . esc_html__('Error: Question deletion failed.', 'isw-product-question-answer-for-woocommerce') . '</p></div>';
                 break;
             default:
                 // translators: %s is the error message returned by the system
-                echo '<div class="notice notice-error is-dismissible"><p>' . esc_html(sprintf(__('Desila se neočekivana greška: %s', 'isw-product-question-answer-for-woocommerce'), $_GET['error'])) . '</p></div>';
+                echo '<div class="notice notice-error is-dismissible"><p>' . esc_html(sprintf(__('An unexpected error occurred: %s', 'isw-product-question-answer-for-woocommerce'), $_GET['error'])) . '</p></div>';
                 break;
         }
     }
@@ -102,16 +102,16 @@ function isw_pqa_admin_page() {
     // Navigacija između stranica
     echo '<nav class="nav-tab-wrapper">';
     echo '<a href="' . esc_url(admin_url('edit.php?post_type=product&page=isw-pqa-qa')) . '" class="nav-tab nav-tab-active">Q&A</a>';
-    echo '<a href="' . esc_url(admin_url('edit.php?post_type=product&page=isw-pqa-settings')) . '" class="nav-tab">Postavke</a>';
+    echo '<a href="' . esc_url(admin_url('edit.php?post_type=product&page=isw-pqa-settings')) . '" class="nav-tab">Settings</a>';
     echo '</nav>';
     echo '<br>';
     
     // Filter za status pitanja
     $current_filter = isset($_GET['filter']) ? sanitize_text_field($_GET['filter']) : 'all';
     echo '<div class="subsubsub">';
-    echo '<a href="' . esc_url(admin_url('edit.php?post_type=product&page=isw-pqa-qa&filter=all')) . '" class="' . (esc_attr($current_filter) == 'all' ? 'current' : '') . '">Sva pitanja</a> | ';
-    echo '<a href="' . esc_url(admin_url('edit.php?post_type=product&page=isw-pqa-qa&filter=answered')) . '" class="' . (esc_attr($current_filter) == 'answered' ? 'current' : '') . '">Odgovorena</a> | ';
-    echo '<a href="' . esc_url(admin_url('edit.php?post_type=product&page=isw-pqa-qa&filter=unanswered')) . '" class="' . (esc_attr($current_filter) == 'unanswered' ? 'current' : '') . '">Neodgovorena</a>';
+    echo '<a href="' . esc_url(admin_url('edit.php?post_type=product&page=isw-pqa-qa&filter=all')) . '" class="' . (esc_attr($current_filter) == 'all' ? 'current' : '') . '">All Questions</a> | ';
+    echo '<a href="' . esc_url(admin_url('edit.php?post_type=product&page=isw-pqa-qa&filter=answered')) . '" class="' . (esc_attr($current_filter) == 'answered' ? 'current' : '') . '">Answered</a> | ';
+    echo '<a href="' . esc_url(admin_url('edit.php?post_type=product&page=isw-pqa-qa&filter=unanswered')) . '" class="' . (esc_attr($current_filter) == 'unanswered' ? 'current' : '') . '">Unanswered</a>';
     echo '</div>';
     echo '<br>';
     ?>
@@ -142,7 +142,7 @@ function isw_pqa_admin_page() {
             }, 10000);
         });
         
-        // Ukloni success/error parametre iz URL-a nakon 3 sekunde
+        // Remove success/error parameters from URL after 3 seconds
         if (window.location.search.indexOf('success=') !== -1 || window.location.search.indexOf('error=') !== -1) {
             setTimeout(function() {
                 var url = window.location.pathname + '?post_type=product&page=isw-pqa-qa';
@@ -229,7 +229,7 @@ function isw_pqa_admin_page() {
         echo '</div>';
 
         echo '<div class="isw-pqa-q-card">';
-        echo '<div><b>Pitanje:</b> '.esc_html($question->post_content).'</div>';
+        echo '<div><b>Question:</b> '.esc_html($question->post_content).'</div>';
         echo '<div style="font-size:11px;color:#666;">'.esc_html(get_the_date('d.m.Y. H:i', $question)).'</div>';
         
         // Dugmad za odobravanje/brisanje ako pitanje čeka odobravanje
@@ -239,21 +239,21 @@ function isw_pqa_admin_page() {
             echo '<input type="hidden" name="action" value="isw_pqa_approve_question">';
             echo '<input type="hidden" name="question_id" value="'.esc_attr($question->ID).'">';
             wp_nonce_field('isw_pqa_approve_question', 'isw_pqa_approve_nonce');
-            echo '<button type="submit" class="button button-primary">Odobri pitanje</button>';
+            echo '<button type="submit" class="button button-primary">Approve Question</button>';
             echo '</form>';
             
             echo '<form method="post" action="'.esc_url(admin_url('admin-post.php')).'" style="display: inline-block;">';
             echo '<input type="hidden" name="action" value="isw_pqa_delete_question">';
             echo '<input type="hidden" name="question_id" value="'.esc_attr($question->ID).'">';
             wp_nonce_field('isw_pqa_delete_question', 'isw_pqa_delete_nonce');
-            echo '<button type="submit" class="button button-secondary" onclick="return confirm(\'Sigurni ste da želite obrisati ovo pitanje?\')">Obriši pitanje</button>';
+            echo '<button type="submit" class="button button-secondary" onclick="return confirm(\'Are you sure you want to delete this question?\')">Delete Question</button>';
             echo '</form>';
             echo '</div>';
         }
 
         if ($has_answer) {
             $answer = $answers[0];
-            echo '<div class="isw-pqa-answer" style="margin-top:10px;"><b>Odgovor:</b> '.esc_html($answer->post_content).'</div>';
+            echo '<div class="isw-pqa-answer" style="margin-top:10px;"><b>Answer:</b> '.esc_html($answer->post_content).'</div>';
             echo '<div style="font-size:11px;color:#666;">'.esc_html(get_the_date('d.m.Y. H:i', $answer)).'</div>';
         } else {
             // Forma za odgovor
@@ -263,7 +263,7 @@ function isw_pqa_admin_page() {
             echo '<input type="hidden" name="product_id" value="'.esc_attr($product_id).'">';
             wp_nonce_field('isw_pqa_add_answer', 'isw_pqa_answer_nonce');
             echo '<textarea name="answer" placeholder="Upišite odgovor..." required style="width: 100%; min-height: 80px; margin: 10px 0;"></textarea>';
-            echo '<br><button type="submit" class="button button-primary">ODGOVORI</button>';
+            echo '<br><button type="submit" class="button button-primary">REPLY</button>';
             echo '</form>';
         }
 
@@ -277,18 +277,18 @@ function isw_pqa_admin_page() {
 add_action('admin_post_isw_pqa_add_answer', function() {
     // Provera bezbednosti
     if (!is_user_logged_in()) {
-        wp_die(esc_html__('Morate biti prijavljeni.', 'isw-product-question-answer-for-woocommerce'), esc_html__('Neovlašćen pristup', 'isw-product-question-answer-for-woocommerce'), array('response' => 403));
+        wp_die(esc_html__('You must be logged in.', 'isw-product-question-answer-for-woocommerce'), esc_html__('Unauthorized Access', 'isw-product-question-answer-for-woocommerce'), array('response' => 403));
     }
     
     if (!current_user_can('manage_woocommerce') && 
         !current_user_can('edit_posts') && 
         !current_user_can('edit_others_posts') &&
         !current_user_can('manage_options')) {
-        wp_die(esc_html__('Nemate dozvolu za ovu akciju.', 'isw-product-question-answer-for-woocommerce'), esc_html__('Neovlašćen pristup', 'isw-product-question-answer-for-woocommerce'), array('response' => 403));
+        wp_die(esc_html__('You do not have permission for this action.', 'isw-product-question-answer-for-woocommerce'), esc_html__('Unauthorized Access', 'isw-product-question-answer-for-woocommerce'), array('response' => 403));
     }
     
     if (!isset($_POST['isw_pqa_answer_nonce']) || !wp_verify_nonce($_POST['isw_pqa_answer_nonce'], 'isw_pqa_add_answer')) {
-        wp_die(esc_html__('Sigurnosna provera neuspešna.', 'isw-product-question-answer-for-woocommerce'), esc_html__('Neispravna sigurnosna provera', 'isw-product-question-answer-for-woocommerce'), array('response' => 403));
+        wp_die(esc_html__('Security check failed.', 'isw-product-question-answer-for-woocommerce'), esc_html__('Invalid Security Check', 'isw-product-question-answer-for-woocommerce'), array('response' => 403));
     }
     
     // Sanitizacija ulaznih podataka
@@ -340,7 +340,7 @@ add_action('admin_post_isw_pqa_approve_question', function() {
     if (!current_user_can('manage_woocommerce') ||
         !isset($_POST['isw_pqa_approve_nonce']) ||
         !wp_verify_nonce($_POST['isw_pqa_approve_nonce'], 'isw_pqa_approve_question')) {
-        wp_die(esc_html__('Nedozvoljen pristup', 'isw-product-question-answer-for-woocommerce'), esc_html__('Neovlašćen pristup', 'isw-product-question-answer-for-woocommerce'), array('response' => 403));
+        wp_die(esc_html__('Unauthorized access', 'isw-product-question-answer-for-woocommerce'), esc_html__('Unauthorized Access', 'isw-product-question-answer-for-woocommerce'), array('response' => 403));
     }
     
     $question_id = absint($_POST['question_id']);
@@ -363,16 +363,16 @@ add_action('admin_post_isw_pqa_approve_question', function() {
 
 // Handler za brisanje pitanja
 add_action('admin_post_isw_pqa_delete_question', function() {
-    // Provera bezbednosti
+    // Security check
     if (!current_user_can('manage_woocommerce') ||
         !isset($_POST['isw_pqa_delete_nonce']) ||
         !wp_verify_nonce($_POST['isw_pqa_delete_nonce'], 'isw_pqa_delete_question')) {
-        wp_die(esc_html__('Nedozvoljen pristup', 'isw-product-question-answer-for-woocommerce'), esc_html__('Neovlašćen pristup', 'isw-product-question-answer-for-woocommerce'), array('response' => 403));
+        wp_die(esc_html__('Unauthorized access', 'isw-product-question-answer-for-woocommerce'), esc_html__('Unauthorized Access', 'isw-product-question-answer-for-woocommerce'), array('response' => 403));
     }
     
     $question_id = absint($_POST['question_id']);
     if ($question_id) {
-        // Prvo obriši sva odgovore na ovo pitanje
+        // First delete all answers to this question
         $answers = get_posts(array(
             'post_type' => 'isw_product_question',
             'post_parent' => $question_id,
@@ -384,7 +384,7 @@ add_action('admin_post_isw_pqa_delete_question', function() {
             wp_delete_post($answer_id, true);
         }
         
-        // Zatim obriši pitanje
+        // Then delete the question
         $result = wp_delete_post($question_id, true);
         
         if ($result) {
@@ -398,7 +398,7 @@ add_action('admin_post_isw_pqa_delete_question', function() {
     exit;
 });
 
-// Handler za neprijavljene korisnike
+// Handler for unauthenticated users
 add_action('admin_post_nopriv_isw_pqa_add_answer', function() {
-    wp_die(esc_html__('Morate biti prijavljeni kao administrator da biste odgovorili na pitanja.', 'isw-product-question-answer-for-woocommerce'), esc_html__('Neovlašćen pristup', 'isw-product-question-answer-for-woocommerce'), array('response' => 403));
+    wp_die(esc_html__('You must be logged in as an administrator to reply to questions.', 'isw-product-question-answer-for-woocommerce'), esc_html__('Unauthorized Access', 'isw-product-question-answer-for-woocommerce'), array('response' => 403));
 });

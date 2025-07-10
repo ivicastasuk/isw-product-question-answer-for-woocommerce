@@ -1,24 +1,24 @@
 <?php
 /**
- * Uninstall script za ISW Product Question and Answer for WooCommerce plugin
+ * Uninstall script for ISW Product Question and Answer for WooCommerce plugin
  * 
- * Ovaj fajl se izvršava kada se plugin briše kroz WordPress admin
+ * This file is executed when the plugin is deleted through WordPress admin
  */
 
-// Ako nije pozvan od WordPress-a, izađi
+// If not called from WordPress, exit
 if (!defined('WP_UNINSTALL_PLUGIN')) {
     exit;
 }
 
-// Sigurnosna provera
+// Security check
 if (!current_user_can('activate_plugins')) {
     return;
 }
 
-// Obriši sve opcije plugina
+// Delete all plugin options
 delete_option('isw_pqa_options');
 
-// Obriši sve custom post type podatke
+// Delete all custom post type data
 $posts = get_posts(array(
     'numberposts' => -1,
     'post_type' => 'isw_product_question',
@@ -29,14 +29,14 @@ foreach ($posts as $post) {
     wp_delete_post($post->ID, true);
 }
 
-// Ukloni custom post type iz baze
+// Remove custom post type from database
 global $wpdb;
 
-// Obriši meta podatke
+// Delete meta data
 $wpdb->query("DELETE FROM {$wpdb->postmeta} WHERE post_id IN (SELECT ID FROM {$wpdb->posts} WHERE post_type = 'isw_product_question')");
 
-// Obriši postove
+// Delete posts
 $wpdb->query("DELETE FROM {$wpdb->posts} WHERE post_type = 'isw_product_question'");
 
-// Očisti cache
+// Clear cache
 wp_cache_flush();

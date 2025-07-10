@@ -2,7 +2,7 @@
 /**
  * Plugin Name: ISW Product Question and Answer for WooCommerce
  * Plugin URI: https://isw-team.com/plugins/product-qa
- * Description: Dodaje Q&A tab sa pitanjima i odgovorima po proizvodima, koristeći Custom Post Type. Potpuno prilagodljiv dizajn sa naprednim opcijama stilizovanja.
+ * Description: Adds Q&A tab with questions and answers per product, using Custom Post Type with fully customizable design and advanced styling options.
  * Version: 1.2.0
  * Author: ISW Team
  * Author URI: https://isw-team.com
@@ -19,18 +19,18 @@
  * Network: false
  */
 
-// Sprečava direktan pristup
+// Prevent direct access
 if (!defined('ABSPATH')) {
     exit;
 }
 
-// Definisanje konstanti
+// Define constants
 define('ISW_PQA_VERSION', '1.2.0');
 define('ISW_PQA_PLUGIN_FILE', __FILE__);
 define('ISW_PQA_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('ISW_PQA_PLUGIN_URL', plugin_dir_url(__FILE__));
 
-// Učitaj admin fajlove samo u admin delu
+// Load admin files only in admin area
 if (is_admin()) {
     require_once ISW_PQA_PLUGIN_DIR . 'admin.php';
     require_once ISW_PQA_PLUGIN_DIR . 'admin-settings.php';
@@ -49,35 +49,35 @@ add_action('before_woocommerce_init', function() {
     }
 });
 
-// WooCommerce aktivacija i dependency check
+// WooCommerce activation and dependency check
 register_activation_hook(__FILE__, 'isw_pqa_activation_check');
 function isw_pqa_activation_check() {
-    // Proveri WordPress verziju
+    // Check WordPress version
     if (version_compare(get_bloginfo('version'), '5.0', '<')) {
         deactivate_plugins(plugin_basename(__FILE__));
         wp_die(
-            esc_html__('ISW Product Q&A zahteva WordPress verziju 5.0 ili noviju.', 'isw-product-question-answer-for-woocommerce'),
-            esc_html__('Plugin greška', 'isw-product-question-answer-for-woocommerce'),
+            esc_html__('ISW Product Q&A requires WordPress version 5.0 or higher.', 'isw-product-question-answer-for-woocommerce'),
+            esc_html__('Plugin Error', 'isw-product-question-answer-for-woocommerce'),
             array('back_link' => true)
         );
     }
     
-    // Proveri PHP verziju
+    // Check PHP version
     if (version_compare(PHP_VERSION, '7.4', '<')) {
         deactivate_plugins(plugin_basename(__FILE__));
         wp_die(
-            esc_html__('ISW Product Q&A zahteva PHP verziju 7.4 ili noviju.', 'isw-product-question-answer-for-woocommerce'),
-            esc_html__('Plugin greška', 'isw-product-question-answer-for-woocommerce'),
+            esc_html__('ISW Product Q&A requires PHP version 7.4 or higher.', 'isw-product-question-answer-for-woocommerce'),
+            esc_html__('Plugin Error', 'isw-product-question-answer-for-woocommerce'),
             array('back_link' => true)
         );
     }
     
-    // Proveri da li je WooCommerce aktivan
+    // Check if WooCommerce is active
     if (!is_plugin_active('woocommerce/woocommerce.php') && !function_exists('WC')) {
         deactivate_plugins(plugin_basename(__FILE__));
         wp_die(
-            esc_html__('ISW Product Q&A zahteva instaliran i aktiviran WooCommerce plugin.', 'isw-product-question-answer-for-woocommerce'),
-            esc_html__('Plugin greška', 'isw-product-question-answer-for-woocommerce'),
+            esc_html__('ISW Product Q&A requires WooCommerce to be installed and activated.', 'isw-product-question-answer-for-woocommerce'),
+            esc_html__('Plugin Error', 'isw-product-question-answer-for-woocommerce'),
             array('back_link' => true)
         );
     }
@@ -86,7 +86,7 @@ function isw_pqa_activation_check() {
     flush_rewrite_rules();
 }
 
-// Dodatna provera pri učitavanju plugina
+// Additional check when loading plugin
 add_action('plugins_loaded', 'isw_pqa_check_woocommerce', 11);
 function isw_pqa_check_woocommerce() {
     if (!function_exists('WC')) {
@@ -95,15 +95,15 @@ function isw_pqa_check_woocommerce() {
     }
 }
 
-// Admin notice ako WooCommerce nije aktivan
+// Admin notice if WooCommerce is not active
 function isw_pqa_woocommerce_missing_notice() {
     echo '<div class="notice notice-error"><p>';
     // translators: %s is the string "WooCommerce" formatted in bold
-    echo wp_kses(sprintf(__('ISW Product Q&A zahteva %s da bi radio ispravno. Molimo instalirajte i aktivirajte WooCommerce.', 'isw-product-question-answer-for-woocommerce'), '<strong>WooCommerce</strong>'), array('strong' => array()));
+    echo wp_kses(sprintf(__('ISW Product Q&A requires %s to work properly. Please install and activate WooCommerce.', 'isw-product-question-answer-for-woocommerce'), '<strong>WooCommerce</strong>'), array('strong' => array()));
     echo '</p></div>';
 }
 
-// Registruj CPT
+// Register CPT
 add_action('init', 'isw_pqa_register_post_type');
 function isw_pqa_register_post_type() {
     register_post_type('isw_product_question', array(
@@ -121,16 +121,16 @@ function isw_pqa_register_post_type() {
     ));
 }
 
-// Dodaj tab
+// Add tab
 add_filter( 'woocommerce_product_tabs', 'isw_pqa_add_tab' );
 function isw_pqa_add_tab( $tabs ) {
-    // Proveri da li je tab omogućen u postavkama
+    // Check if tab is enabled in settings
     $enable_tab = isw_pqa_get_option('enable_qa_tab', 1);
     if (!$enable_tab) {
         return $tabs;
     }
     
-    $tab_title = isw_pqa_get_option('qa_tab_title', 'Pitanja i odgovori');
+    $tab_title = isw_pqa_get_option('qa_tab_title', 'Questions & Answers');
     $tab_priority = isw_pqa_get_option('qa_tab_priority', 60);
     
     $tabs['isw_qa_tab'] = array(
@@ -141,17 +141,17 @@ function isw_pqa_add_tab( $tabs ) {
     return $tabs;
 }
 
-// Prikaz taba
+// Tab display
 function isw_pqa_tab_content() {
     global $product;
     $product_id = $product->get_id();
     $current_user = wp_get_current_user();
 
-    // Podesivi tekstovi dugmića
-    $btn_text_ask_question = isw_pqa_get_option('btn_text_ask_question', 'Postavi pitanje');
-    $btn_text_submit_question = isw_pqa_get_option('btn_text_submit_question', 'Pošalji');
-    $btn_text_cancel = isw_pqa_get_option('btn_text_cancel', 'Otkaži');
-    $btn_text_load_more = isw_pqa_get_option('btn_text_load_more', 'Učitaj još...');
+    // Customizable button texts
+    $btn_text_ask_question = isw_pqa_get_option('btn_text_ask_question', 'Ask a Question');
+    $btn_text_submit_question = isw_pqa_get_option('btn_text_submit_question', 'Submit');
+    $btn_text_cancel = isw_pqa_get_option('btn_text_cancel', 'Cancel');
+    $btn_text_load_more = isw_pqa_get_option('btn_text_load_more', 'Load More...');
 
     echo '<div id="isw-qa-container" data-product="' . esc_attr( $product_id ) . '" data-can-answer="' . (current_user_can('edit_others_posts') ? '1' : '0') . '">';
     echo '<div id="isw-qa-list"></div>';
@@ -160,20 +160,20 @@ function isw_pqa_tab_content() {
     if ( is_user_logged_in() ) {
         echo '<button id="isw-qa-toggle-form" class="isw-qa-btn">' . esc_html($btn_text_ask_question) . '</button>';
         echo '<form id="isw-qa-form" method="post" style="display:none">';
-        echo '<textarea name="question" required placeholder="' . esc_attr__('Vaše pitanje...', 'isw-product-question-answer-for-woocommerce') . '"></textarea>';
+        echo '<textarea name="question" required placeholder="' . esc_attr__('Your question...', 'isw-product-question-answer-for-woocommerce') . '"></textarea>';
         echo '<input type="hidden" name="product_id" value="' . esc_attr( $product_id ) . '">';
         echo '<input type="hidden" name="nonce" value="' . esc_attr( wp_create_nonce( 'isw_pqa_nonce' ) ) . '">';
         echo '<button type="submit" class="isw-qa-btn">' . esc_html($btn_text_submit_question) . '</button>';
         echo '<button type="button" id="isw-qa-cancel" class="isw-qa-btn" style="margin-left:10px;">' . esc_html($btn_text_cancel) . '</button>';
         echo '</form>';
     } else {
-        echo '<p>' . esc_html__('Morate biti prijavljeni da biste postavili pitanje.', 'isw-product-question-answer-for-woocommerce') . '</p>';
+        echo '<p>' . esc_html__('You must be logged in to ask a question.', 'isw-product-question-answer-for-woocommerce') . '</p>';
     }
 
     echo '</div>';
 }
 
-// Snimi odgovor
+// Save answer
 add_action( 'wp_ajax_isw_pqa_submit_answer', 'isw_pqa_submit_answer' );
 function isw_pqa_submit_answer() {
     check_ajax_referer( 'isw_pqa_nonce', 'nonce' );
@@ -187,7 +187,7 @@ function isw_pqa_submit_answer() {
 
     wp_insert_post(array(
         'post_type' => 'isw_product_question',
-        'post_title' => __('Odgovor', 'isw-product-question-answer-for-woocommerce') . ' - ' . current_time('mysql'),
+        'post_title' => __('Answer', 'isw-product-question-answer-for-woocommerce') . ' - ' . current_time('mysql'),
         'post_content' => $answer,
         'post_status' => 'publish',
         'post_author' => get_current_user_id(),
@@ -195,10 +195,10 @@ function isw_pqa_submit_answer() {
         'meta_input' => array('product_id' => $product_id)
     ));
 
-    wp_send_json_success( __('Odgovor je sačuvan.', 'isw-product-question-answer-for-woocommerce') );
+    wp_send_json_success( __('Answer has been saved.', 'isw-product-question-answer-for-woocommerce') );
 }
 
-// Snimi pitanje
+// Save question
 add_action( 'wp_ajax_isw_pqa_submit', 'isw_pqa_submit_question' );
 function isw_pqa_submit_question() {
     check_ajax_referer( 'isw_pqa_nonce', 'nonce' );
@@ -212,23 +212,23 @@ function isw_pqa_submit_question() {
 
     $question_id = wp_insert_post(array(
         'post_type' => 'isw_product_question',
-        'post_title' => __('Pitanje', 'isw-product-question-answer-for-woocommerce') . ' - ' . current_time('mysql'),
+        'post_title' => __('Question', 'isw-product-question-answer-for-woocommerce') . ' - ' . current_time('mysql'),
         'post_content' => $question,
         'post_status' => $post_status,
         'post_author' => get_current_user_id(),
         'meta_input' => array('product_id' => $product_id)
     ));
     
-    // Pošalji email notifikaciju ako je omogućena
+    // Send email notification if enabled
     $email_notifications = isw_pqa_get_option('email_notifications', 0);
     if ($email_notifications && $question_id) {
         $admin_email = get_option('admin_email');
         $product = wc_get_product($product_id);
-        $product_name = $product ? $product->get_name() : __('Nepoznat proizvod', 'isw-product-question-answer-for-woocommerce');
+        $product_name = $product ? $product->get_name() : __('Unknown Product', 'isw-product-question-answer-for-woocommerce');
         $user = wp_get_current_user();
         
         // translators: %s is the product name
-        $subject = sprintf(__('Novo pitanje na proizvodu: %s', 'isw-product-question-answer-for-woocommerce'), $product_name);
+        $subject = sprintf(__('New question on product: %s', 'isw-product-question-answer-for-woocommerce'), $product_name);
         // translators: %s is the user's display name
         $message = sprintf(__('Korisnik %s je postavio novo pitanje:', 'isw-product-question-answer-for-woocommerce'), $user->display_name) . "\n\n";
         // translators: %s is the product name
@@ -240,11 +240,11 @@ function isw_pqa_submit_question() {
         wp_mail($admin_email, $subject, $message);
     }
 
-    $message = $auto_approve ? __('Pitanje je sačuvano.', 'isw-product-question-answer-for-woocommerce') : __('Pitanje je poslato na odobravanje.', 'isw-product-question-answer-for-woocommerce');
+    $message = $auto_approve ? __('Question has been saved.', 'isw-product-question-answer-for-woocommerce') : __('Question has been submitted for approval.', 'isw-product-question-answer-for-woocommerce');
     wp_send_json_success( $message );
 }
 
-// Učitaj pitanja i odgovore (dodata forma za odgovor)
+// Load questions and answers (added form for answer)
 function isw_pqa_load_questions() {
     $product_id = absint( $_GET['product_id'] );
     $offset = absint( $_GET['offset'] );
@@ -273,11 +273,11 @@ function isw_pqa_load_questions() {
 
     foreach ( $posts as $post ) {
         $author = get_userdata($post->post_author);
-        $author_name = $author ? $author->display_name : esc_html__('Korisnik', 'isw-product-question-answer-for-woocommerce');
+        $author_name = $author ? $author->display_name : esc_html__('User', 'isw-product-question-answer-for-woocommerce');
 
         $output .= '<div class="qa-thread">';
         $output .= '<div class="qa-item">';
-        $output .= '<div class="question"><strong>' . esc_html($author_name) . ' ' . esc_html__('postavio pitanje:', 'isw-product-question-answer-for-woocommerce') . '</strong> ' . esc_html( $post->post_content ) . '<br><small>' . esc_html( get_the_date('d.m.Y. H:i', $post) ) . '</small></div>';
+        $output .= '<div class="question"><strong>' . esc_html($author_name) . ' ' . esc_html__('asked:', 'isw-product-question-answer-for-woocommerce') . '</strong> ' . esc_html( $post->post_content ) . '<br><small>' . esc_html( get_the_date('M j, Y g:i A', $post) ) . '</small></div>';
 
         $replies = get_children(array(
             'post_parent' => $post->ID,
@@ -289,7 +289,7 @@ function isw_pqa_load_questions() {
         foreach ( $replies as $reply ) {
             $reply_author = get_userdata($reply->post_author);
             $reply_author_name = $reply_author ? $reply_author->display_name : esc_html__('Admin', 'isw-product-question-answer-for-woocommerce');
-            $output .= '<div class="answer"><em>' . esc_html($reply_author_name) . ' ' . esc_html__('odgovorio:', 'isw-product-question-answer-for-woocommerce') . '</em> ' . esc_html( $reply->post_content ) . '<br><small>' . esc_html( get_the_date('d.m.Y. H:i', $reply) ) . '</small></div>';
+            $output .= '<div class="answer"><em>' . esc_html($reply_author_name) . ' ' . esc_html__('replied:', 'isw-product-question-answer-for-woocommerce') . '</em> ' . esc_html( $reply->post_content ) . '<br><small>' . esc_html( get_the_date('M j, Y g:i A', $reply) ) . '</small></div>';
         }
 
         $output .= '</div></div>';
@@ -476,7 +476,7 @@ add_action('wp_enqueue_scripts', function() {
         wp_localize_script('isw-pqa-ajax', 'isw_pqa_ajax', array(
             'ajax_url' => admin_url('admin-ajax.php'),
             'questions_per_page' => isw_pqa_get_option('questions_per_page', 5),
-            'btn_text_load_more' => isw_pqa_get_option('btn_text_load_more', 'Učitaj još...')
+            'btn_text_load_more' => isw_pqa_get_option('btn_text_load_more', 'Load More...')
         ));
         wp_enqueue_style(
             'isw-pqa-style',
