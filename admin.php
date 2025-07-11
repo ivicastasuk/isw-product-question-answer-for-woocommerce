@@ -69,6 +69,9 @@ function isw_pqa_admin_page() {
             case 'question_deleted':
                 echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__('Question has been successfully deleted!', 'isw-product-question-answer-for-woocommerce') . '</p></div>';
                 break;
+            case 'answer_deleted':
+                echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__('Answer has been successfully deleted!', 'isw-product-question-answer-for-woocommerce') . '</p></div>';
+                break;
         }
     }
     
@@ -91,6 +94,9 @@ function isw_pqa_admin_page() {
                 break;
             case 'delete_failed':
                 echo '<div class="notice notice-error is-dismissible"><p>' . esc_html__('Error: Question deletion failed.', 'isw-product-question-answer-for-woocommerce') . '</p></div>';
+                break;
+            case 'invalid_answer':
+                echo '<div class="notice notice-error is-dismissible"><p>' . esc_html__('Error: Answer does not exist or is invalid.', 'isw-product-question-answer-for-woocommerce') . '</p></div>';
                 break;
             default:
                 // translators: %s is the error message returned by the system
@@ -255,6 +261,17 @@ function isw_pqa_admin_page() {
             $answer = $answers[0];
             echo '<div class="isw-pqa-answer" style="margin-top:10px;"><b>Answer:</b> '.esc_html($answer->post_content).'</div>';
             echo '<div style="font-size:11px;color:#666;">'.esc_html(get_the_date('d.m.Y. H:i', $answer)).'</div>';
+            
+            // Delete answer button
+            echo '<div class="isw-pqa-delete-section">';
+            echo '<form method="post" action="'.esc_url(admin_url('admin-post.php')).'" style="display: inline-block; margin-right: 10px;">';
+            echo '<input type="hidden" name="action" value="isw_pqa_delete_answer">';
+            echo '<input type="hidden" name="answer_id" value="'.esc_attr($answer->ID).'">';
+            echo '<input type="hidden" name="question_id" value="'.esc_attr($question->ID).'">';
+            wp_nonce_field('isw_pqa_delete_answer', 'isw_pqa_delete_answer_nonce');
+            echo '<button type="submit" class="button button-secondary isw-pqa-delete-answer-btn" onclick="return confirm(\'Are you sure you want to delete this answer?\')">Delete Answer</button>';
+            echo '</form>';
+            echo '</div>';
         } else {
             // Forma za odgovor
             echo '<form class="isw-pqa-answer-form" method="post" action="'.esc_url(admin_url('admin-post.php')).'">';
@@ -266,6 +283,16 @@ function isw_pqa_admin_page() {
             echo '<br><button type="submit" class="button button-primary">REPLY</button>';
             echo '</form>';
         }
+        
+        // Add delete question button for all questions (whether they have answers or not)
+        echo '<div class="isw-pqa-delete-section">';
+        echo '<form method="post" action="'.esc_url(admin_url('admin-post.php')).'" style="display: inline-block;">';
+        echo '<input type="hidden" name="action" value="isw_pqa_delete_question">';
+        echo '<input type="hidden" name="question_id" value="'.esc_attr($question->ID).'">';
+        wp_nonce_field('isw_pqa_delete_question', 'isw_pqa_delete_nonce');
+        echo '<button type="submit" class="button button-secondary isw-pqa-delete-question-btn" onclick="return confirm(\'Are you sure you want to delete this question and all its answers?\')">Delete Question</button>';
+        echo '</form>';
+        echo '</div>';
 
         echo '</div></div>';
     }
@@ -394,6 +421,38 @@ add_action('admin_post_isw_pqa_delete_question', function() {
         }
     } else {
         wp_redirect(admin_url('edit.php?post_type=product&page=isw-pqa-qa&error=invalid_question'));
+    }
+    exit;
+});
+
+// Handler za brisanje pojedinačnog odgovora
+add_action('admin_post_isw_pqa_delete_answer', function() {
+    // Security check
+    if (!current_user_can('manage_woocommerce') ||
+        !isset($_POST['isw_pqa_delete_answer_nonce']) ||
+        !wp_verify_nonce($_POST['isw_pqa_delete_answer_nonce'], 'isw_pqa_delete_answer')) {
+        wp_die(esc_html__('Unauthorized access', 'isw-product-question-answer-for-woocommerce'), esc_html__('Unauthorized Access', 'isw-product-question-answer-for-woocommerce'), array('response' => 403));
+    }
+    
+    $answer_id = absint($_POST['answer_id']);
+    $question_id = absint($_POST['question_id']);
+    
+    if ($answer_id && $question_id) {
+        // Verify that this answer belongs to the specified question
+        $answer = get_post($answer_id);
+        if ($answer && $answer->post_type === 'isw_product_question' && $answer->post_parent == $question_id) {
+            $result = wp_delete_post($answer_id, true);
+            
+            if ($result) {
+                wp_redirect(admin_url('edit.php?post_type=product&page=isw-pqa-qa&success=answer_deleted'));
+            } else {
+                wp_redirect(admin_url('edit.php?post_type=product&page=isw-pqa-qa&error=delete_failed'));
+            }
+        } else {
+            wp_redirect(admin_url('edit.php?post_type=product&page=isw-pqa-qa&error=invalid_answer'));
+        }
+    } else {
+        wp_redirect(admin_url('edit.php?post_type=product&page=isw-pqa-qa&error=missing_data'));
     }
     exit;
 });

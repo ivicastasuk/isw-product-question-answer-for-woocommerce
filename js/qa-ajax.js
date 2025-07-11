@@ -3,11 +3,11 @@ jQuery(function($){
     const container = $('#isw-qa-container');
     const productID = container.data('product');
     const questionsPerPage = parseInt(isw_pqa_ajax.questions_per_page) || 5;
-    const loadMoreText = isw_pqa_ajax.btn_text_load_more || 'Učitaj još...';
+    const loadMoreText = isw_pqa_ajax.btn_text_load_more || 'Load More...';
 
     function loadQuestions() {
-        // Prikaži loading text
-        $('#isw-qa-load-more').text('Učitava...');
+        // Show loading text
+        $('#isw-qa-load-more').text('Loading...');
         
         $.get(isw_pqa_ajax.ajax_url, {
             action: 'isw_pqa_load',

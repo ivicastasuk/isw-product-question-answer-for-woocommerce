@@ -172,6 +172,70 @@ function isw_pqa_tab_content() {
     echo '</div>';
 }
 
+// Delete question and all its answers
+add_action('wp_ajax_isw_pqa_delete_question', 'isw_pqa_delete_question');
+function isw_pqa_delete_question() {
+    check_ajax_referer('isw_pqa_nonce', 'nonce');
+    
+    if (!is_user_logged_in()) {
+        wp_send_json_error(__('You must be logged in to delete questions.', 'isw-product-question-answer-for-woocommerce'));
+    }
+    
+    $question_id = absint($_POST['question_id']);
+    $question = get_post($question_id);
+    
+    if (!$question || $question->post_type !== 'isw_product_question') {
+        wp_send_json_error(__('Question not found.', 'isw-product-question-answer-for-woocommerce'));
+    }
+    
+    // Check permissions: user can delete their own questions or admin can delete any
+    if ($question->post_author != get_current_user_id() && !current_user_can('delete_others_posts')) {
+        wp_send_json_error(__('You do not have permission to delete this question.', 'isw-product-question-answer-for-woocommerce'));
+    }
+    
+    // First delete all answers (child posts)
+    $answers = get_children(array(
+        'post_parent' => $question_id,
+        'post_type' => 'isw_product_question',
+        'post_status' => 'any'
+    ));
+    
+    foreach ($answers as $answer) {
+        wp_delete_post($answer->ID, true);
+    }
+    
+    // Then delete the question
+    wp_delete_post($question_id, true);
+    
+    wp_send_json_success(__('Question and all related answers have been deleted.', 'isw-product-question-answer-for-woocommerce'));
+}
+
+// Delete individual answer
+add_action('wp_ajax_isw_pqa_delete_answer', 'isw_pqa_delete_answer');
+function isw_pqa_delete_answer() {
+    check_ajax_referer('isw_pqa_nonce', 'nonce');
+    
+    if (!is_user_logged_in()) {
+        wp_send_json_error(__('You must be logged in to delete answers.', 'isw-product-question-answer-for-woocommerce'));
+    }
+    
+    $answer_id = absint($_POST['answer_id']);
+    $answer = get_post($answer_id);
+    
+    if (!$answer || $answer->post_type !== 'isw_product_question' || $answer->post_parent == 0) {
+        wp_send_json_error(__('Answer not found.', 'isw-product-question-answer-for-woocommerce'));
+    }
+    
+    // Check permissions: user can delete their own answers or admin can delete any
+    if ($answer->post_author != get_current_user_id() && !current_user_can('delete_others_posts')) {
+        wp_send_json_error(__('You do not have permission to delete this answer.', 'isw-product-question-answer-for-woocommerce'));
+    }
+    
+    wp_delete_post($answer_id, true);
+    
+    wp_send_json_success(__('Answer has been deleted.', 'isw-product-question-answer-for-woocommerce'));
+}
+
 // Save answer
 add_action( 'wp_ajax_isw_pqa_submit_answer', 'isw_pqa_submit_answer' );
 function isw_pqa_submit_answer() {
@@ -273,10 +337,18 @@ function isw_pqa_load_questions() {
     foreach ( $posts as $post ) {
         $author = get_userdata($post->post_author);
         $author_name = $author ? $author->display_name : esc_html__('User', 'isw-product-question-answer-for-woocommerce');
+        $current_user_id = get_current_user_id();
+        $can_delete_question = ($post->post_author == $current_user_id) || current_user_can('delete_others_posts');
 
         $output .= '<div class="qa-thread">';
         $output .= '<div class="qa-item">';
         $output .= '<div class="question"><strong>' . esc_html($author_name) . ' ' . esc_html__('asked:', 'isw-product-question-answer-for-woocommerce') . '</strong> ' . esc_html( $post->post_content );
+        
+        // Add delete button for questions
+        if ($can_delete_question && is_user_logged_in()) {
+            $output .= '<button class="isw-qa-delete-btn" data-type="question" data-id="' . esc_attr($post->ID) . '" data-nonce="' . esc_attr(wp_create_nonce('isw_pqa_nonce')) . '">' . esc_html__('Delete', 'isw-product-question-answer-for-woocommerce') . '</button>';
+        }
+        
         $output .= '<br><small>' . esc_html( get_the_date('M j, Y g:i A', $post) ) . '</small></div>';
 
         $replies = get_children(array(
@@ -289,8 +361,15 @@ function isw_pqa_load_questions() {
         foreach ( $replies as $reply ) {
             $reply_author = get_userdata($reply->post_author);
             $reply_author_name = $reply_author ? $reply_author->display_name : esc_html__('Admin', 'isw-product-question-answer-for-woocommerce');
+            $can_delete_answer = ($reply->post_author == $current_user_id) || current_user_can('delete_others_posts');
             
             $output .= '<div class="answer"><em>' . esc_html($reply_author_name) . ' ' . esc_html__('replied:', 'isw-product-question-answer-for-woocommerce') . '</em> ' . esc_html( $reply->post_content );
+            
+            // Add delete button for answers
+            if ($can_delete_answer && is_user_logged_in()) {
+                $output .= '<button class="isw-qa-delete-btn" data-type="answer" data-id="' . esc_attr($reply->ID) . '" data-nonce="' . esc_attr(wp_create_nonce('isw_pqa_nonce')) . '">' . esc_html__('Delete', 'isw-product-question-answer-for-woocommerce') . '</button>';
+            }
+            
             $output .= '<br><small>' . esc_html( get_the_date('M j, Y g:i A', $reply) ) . '</small></div>';
         }
 
@@ -304,7 +383,13 @@ function isw_pqa_load_questions() {
         'strong' => array(),
         'em' => array(),
         'br' => array(),
-        'small' => array()
+        'small' => array(),
+        'button' => array(
+            'class' => array(),
+            'data-type' => array(),
+            'data-id' => array(),
+            'data-nonce' => array()
+        )
     );
     
     echo wp_kses($output, $allowed_html);
@@ -459,6 +544,23 @@ function isw_pqa_generate_dynamic_css() {
             color: {$text_color} !important;
             border-radius: {$container_border_radius}px !important;
             padding: {$container_padding}px !important;
+        }
+        
+        /* Delete buttons */
+        .isw-qa-delete-btn {
+            background-color: #dc3545 !important;
+            color: #ffffff !important;
+            border: 1px solid #dc3545 !important;
+            padding: 2px 8px !important;
+            font-size: 12px !important;
+            border-radius: 3px !important;
+            cursor: pointer !important;
+            margin-left: 10px !important;
+        }
+        
+        .isw-qa-delete-btn:hover {
+            background-color: #c82333 !important;
+            border-color: #bd2130 !important;
         }
     ";
     
