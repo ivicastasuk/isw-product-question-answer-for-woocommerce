@@ -39,7 +39,28 @@ if (is_admin()) {
 // Internationalization
 add_action('plugins_loaded', 'isw_pqa_load_textdomain');
 function isw_pqa_load_textdomain() {
-    load_plugin_textdomain('isw-product-question-answer-for-woocommerce', false, dirname(plugin_basename(__FILE__)) . '/languages');
+    $loaded = load_plugin_textdomain('isw-product-question-answer-for-woocommerce', false, dirname(plugin_basename(__FILE__)) . '/languages');
+    
+    // Debug: log translation loading
+    if (defined('WP_DEBUG') && WP_DEBUG) {
+        error_log('ISW PQA: Translation loaded: ' . ($loaded ? 'YES' : 'NO') . ' for locale: ' . get_locale());
+    }
+}
+
+// Debug function to test translations
+add_action('wp_ajax_isw_pqa_test_translations', 'isw_pqa_test_translations');
+add_action('wp_ajax_nopriv_isw_pqa_test_translations', 'isw_pqa_test_translations');
+
+function isw_pqa_test_translations() {
+    $translations = array(
+        'asked' => __('asked:', 'isw-product-question-answer-for-woocommerce'),
+        'replied' => __('replied:', 'isw-product-question-answer-for-woocommerce'),
+        'loading' => __('Loading...', 'isw-product-question-answer-for-woocommerce'),
+        'locale' => get_locale(),
+        'text_domain_loaded' => is_textdomain_loaded('isw-product-question-answer-for-woocommerce')
+    );
+    
+    wp_send_json_success($translations);
 }
 
 // WooCommerce HPOS compatibility
@@ -103,8 +124,8 @@ function isw_pqa_woocommerce_missing_notice() {
     echo '</p></div>';
 }
 
-// Register CPT
-add_action('init', 'isw_pqa_register_post_type');
+// Register CPT early
+add_action('init', 'isw_pqa_register_post_type', 5);
 function isw_pqa_register_post_type() {
     register_post_type('isw_product_question', array(
         'labels' => array(
@@ -118,6 +139,12 @@ function isw_pqa_register_post_type() {
         'capability_type' => 'post',
         'menu_icon' => 'dashicons-editor-help'
     ));
+    
+    // Flush rewrite rules on first activation
+    if (get_option('isw_pqa_flush_rewrite_rules', false) == false) {
+        flush_rewrite_rules();
+        update_option('isw_pqa_flush_rewrite_rules', true);
+    }
 }
 
 // Add tab
@@ -129,7 +156,7 @@ function isw_pqa_add_tab( $tabs ) {
         return $tabs;
     }
     
-    $tab_title = isw_pqa_get_option('qa_tab_title', 'Questions & Answers');
+    $tab_title = isw_pqa_get_option('qa_tab_title', __('Questions & Answers', 'isw-product-question-answer-for-woocommerce'));
     $tab_priority = isw_pqa_get_option('qa_tab_priority', 60);
     
     $tabs['isw_qa_tab'] = array(
@@ -147,10 +174,10 @@ function isw_pqa_tab_content() {
     $current_user = wp_get_current_user();
 
     // Customizable button texts
-    $btn_text_ask_question = isw_pqa_get_option('btn_text_ask_question', 'Ask a Question');
-    $btn_text_submit_question = isw_pqa_get_option('btn_text_submit_question', 'Submit');
-    $btn_text_cancel = isw_pqa_get_option('btn_text_cancel', 'Cancel');
-    $btn_text_load_more = isw_pqa_get_option('btn_text_load_more', 'Load More...');
+    $btn_text_ask_question = isw_pqa_get_option('btn_text_ask_question', __('Ask a Question', 'isw-product-question-answer-for-woocommerce'));
+    $btn_text_submit_question = isw_pqa_get_option('btn_text_submit_question', __('Submit', 'isw-product-question-answer-for-woocommerce'));
+    $btn_text_cancel = isw_pqa_get_option('btn_text_cancel', __('Cancel', 'isw-product-question-answer-for-woocommerce'));
+    $btn_text_load_more = isw_pqa_get_option('btn_text_load_more', __('Load More...', 'isw-product-question-answer-for-woocommerce'));
 
     echo '<div id="isw-qa-container" data-product="' . esc_attr( $product_id ) . '" data-can-answer="' . (current_user_can('edit_others_posts') ? '1' : '0') . '">';
     echo '<div id="isw-qa-list"></div>';
@@ -175,143 +202,191 @@ function isw_pqa_tab_content() {
 // Save answer
 add_action( 'wp_ajax_isw_pqa_submit_answer', 'isw_pqa_submit_answer' );
 function isw_pqa_submit_answer() {
-    check_ajax_referer( 'isw_pqa_nonce', 'nonce' );
-    if ( ! is_user_logged_in() || ! current_user_can( 'edit_others_posts' ) ) wp_send_json_error();
+    try {
+        check_ajax_referer( 'isw_pqa_nonce', 'nonce' );
+        if ( ! is_user_logged_in() || ! current_user_can( 'edit_others_posts' ) ) wp_send_json_error();
 
-    $answer = sanitize_text_field( $_POST['answer'] );
-    $question_id = absint( $_POST['question_id'] );
-    $product_id = absint( $_POST['product_id'] );
+        $answer = sanitize_text_field( $_POST['answer'] );
+        $question_id = absint( $_POST['question_id'] );
+        $product_id = absint( $_POST['product_id'] );
 
-    if (!$answer || !$question_id || !$product_id) wp_send_json_error();
+        if (!$answer || !$question_id || !$product_id) wp_send_json_error('Invalid data provided');
 
-    wp_insert_post(array(
-        'post_type' => 'isw_product_question',
-        'post_title' => __('Answer', 'isw-product-question-answer-for-woocommerce') . ' - ' . current_time('mysql'),
-        'post_content' => $answer,
-        'post_status' => 'publish',
-        'post_author' => get_current_user_id(),
-        'post_parent' => $question_id,
-        'meta_input' => array('product_id' => $product_id)
-    ));
+        $answer_id = wp_insert_post(array(
+            'post_type' => 'isw_product_question',
+            'post_title' => __('Answer', 'isw-product-question-answer-for-woocommerce') . ' - ' . current_time('mysql'),
+            'post_content' => $answer,
+            'post_status' => 'publish',
+            'post_author' => get_current_user_id(),
+            'post_parent' => $question_id,
+            'meta_input' => array('product_id' => $product_id)
+        ));
+        
+        if (is_wp_error($answer_id)) {
+            error_log('ISW PQA: Error creating answer: ' . $answer_id->get_error_message());
+            wp_send_json_error('Failed to save answer');
+        }
 
-    wp_send_json_success( __('Answer has been saved.', 'isw-product-question-answer-for-woocommerce') );
+        wp_send_json_success( __('Answer has been saved.', 'isw-product-question-answer-for-woocommerce') );
+        
+    } catch (Exception $e) {
+        error_log('ISW PQA Submit Answer Error: ' . $e->getMessage());
+        wp_send_json_error('Server error occurred');
+    }
 }
 
 // Save question
 add_action( 'wp_ajax_isw_pqa_submit', 'isw_pqa_submit_question' );
 function isw_pqa_submit_question() {
-    check_ajax_referer( 'isw_pqa_nonce', 'nonce' );
-    if ( ! is_user_logged_in() || ! current_user_can( 'read' ) ) wp_send_json_error();
+    try {
+        check_ajax_referer( 'isw_pqa_nonce', 'nonce' );
+        if ( ! is_user_logged_in() || ! current_user_can( 'read' ) ) wp_send_json_error();
 
-    $question = sanitize_text_field( $_POST['question'] );
-    $product_id = absint( $_POST['product_id'] );
-    
-    $auto_approve = isw_pqa_get_option('auto_approve_questions', 1);
-    $post_status = $auto_approve ? 'publish' : 'pending';
+        $question = sanitize_text_field( $_POST['question'] );
+        $product_id = absint( $_POST['product_id'] );
+        
+        if (empty($question) || !$product_id) {
+            wp_send_json_error('Invalid data provided');
+        }
+        
+        $auto_approve = isw_pqa_get_option('auto_approve_questions', 1);
+        $post_status = $auto_approve ? 'publish' : 'pending';
 
-    $question_id = wp_insert_post(array(
-        'post_type' => 'isw_product_question',
-        'post_title' => __('Question', 'isw-product-question-answer-for-woocommerce') . ' - ' . current_time('mysql'),
-        'post_content' => $question,
-        'post_status' => $post_status,
-        'post_author' => get_current_user_id(),
-        'meta_input' => array('product_id' => $product_id)
-    ));
-    
-    // Send email notification if enabled
-    $email_notifications = isw_pqa_get_option('email_notifications', 0);
-    if ($email_notifications && $question_id) {
-        $admin_email = get_option('admin_email');
-        $product = wc_get_product($product_id);
-        $product_name = $product ? $product->get_name() : __('Unknown Product', 'isw-product-question-answer-for-woocommerce');
-        $user = wp_get_current_user();
+        $question_id = wp_insert_post(array(
+            'post_type' => 'isw_product_question',
+            'post_title' => __('Question', 'isw-product-question-answer-for-woocommerce') . ' - ' . current_time('mysql'),
+            'post_content' => $question,
+            'post_status' => $post_status,
+            'post_author' => get_current_user_id(),
+            'meta_input' => array('product_id' => $product_id)
+        ));
         
-        // translators: %s is the product name
-        $subject = sprintf(__('New question on product: %s', 'isw-product-question-answer-for-woocommerce'), $product_name);
-        // translators: %s is the user display name
-        $message = sprintf(__('User %s has asked a new question:', 'isw-product-question-answer-for-woocommerce'), $user->display_name) . "\n\n";
-        // translators: %s is the product name
-        $message .= sprintf(__('Product: %s', 'isw-product-question-answer-for-woocommerce'), $product_name) . "\n";
-        // translators: %s is the question text
-        $message .= sprintf(__('Question: %s', 'isw-product-question-answer-for-woocommerce'), $question) . "\n\n";
-        $message .= __('Reply at:', 'isw-product-question-answer-for-woocommerce') . ' ' . admin_url('edit.php?post_type=product&page=isw-pqa-qa');
+        if (is_wp_error($question_id)) {
+            error_log('ISW PQA: Error creating question: ' . $question_id->get_error_message());
+            wp_send_json_error('Failed to save question');
+        }
         
-        wp_mail($admin_email, $subject, $message);
+        // Send email notification if enabled
+        $email_notifications = isw_pqa_get_option('email_notifications', 0);
+        if ($email_notifications && $question_id) {
+            $admin_email = get_option('admin_email');
+            $product = wc_get_product($product_id);
+            $product_name = $product ? $product->get_name() : __('Unknown Product', 'isw-product-question-answer-for-woocommerce');
+            $user = wp_get_current_user();
+            
+            // translators: %s is the product name
+            $subject = sprintf(__('New question on product: %s', 'isw-product-question-answer-for-woocommerce'), $product_name);
+            // translators: %s is the user display name
+            $message = sprintf(__('User %s has asked a new question:', 'isw-product-question-answer-for-woocommerce'), $user->display_name) . "\n\n";
+            // translators: %s is the product name
+            $message .= sprintf(__('Product: %s', 'isw-product-question-answer-for-woocommerce'), $product_name) . "\n";
+            // translators: %s is the question text
+            $message .= sprintf(__('Question: %s', 'isw-product-question-answer-for-woocommerce'), $question) . "\n\n";
+            $message .= __('Reply at:', 'isw-product-question-answer-for-woocommerce') . ' ' . admin_url('edit.php?post_type=product&page=isw-pqa-qa');
+            
+            wp_mail($admin_email, $subject, $message);
+        }
+
+        $message = $auto_approve ? __('Question has been saved.', 'isw-product-question-answer-for-woocommerce') : __('Question has been submitted for approval.', 'isw-product-question-answer-for-woocommerce');
+        wp_send_json_success( $message );
+        
+    } catch (Exception $e) {
+        error_log('ISW PQA Submit Error: ' . $e->getMessage());
+        wp_send_json_error('Server error occurred');
     }
-
-    $message = $auto_approve ? __('Question has been saved.', 'isw-product-question-answer-for-woocommerce') : __('Question has been submitted for approval.', 'isw-product-question-answer-for-woocommerce');
-    wp_send_json_success( $message );
 }
 
 // Load questions and answers (added form for answer)
-function isw_pqa_load_questions() {
-    $product_id = absint( $_GET['product_id'] );
-    $offset = absint( $_GET['offset'] );
-    $can_answer = current_user_can('edit_others_posts');
-    $questions_per_page = isw_pqa_get_option('questions_per_page', 5);
-
-    $args = array(
-        'post_type' => 'isw_product_question',
-        'posts_per_page' => intval($questions_per_page),
-        'offset' => $offset,
-        'orderby' => 'date',
-        'order' => 'DESC',
-        'post_parent' => 0,
-        'post_status' => 'publish', // Only approved questions
-        'meta_query' => array(
-            array(
-                'key' => 'product_id',
-                'value' => $product_id,
-                'compare' => '='
-            )
-        )
-    );
-
-    $posts = get_posts( $args );
-    $output = '';
-
-    foreach ( $posts as $post ) {
-        $author = get_userdata($post->post_author);
-        $author_name = $author ? $author->display_name : esc_html__('User', 'isw-product-question-answer-for-woocommerce');
-
-        $output .= '<div class="qa-thread">';
-        $output .= '<div class="qa-item">';
-        $output .= '<div class="question"><strong>' . esc_html($author_name) . ' ' . esc_html__('asked:', 'isw-product-question-answer-for-woocommerce') . '</strong> ' . esc_html( $post->post_content );
-        $output .= '<br><small>' . esc_html( get_the_date('M j, Y g:i A', $post) ) . '</small></div>';
-
-        $replies = get_children(array(
-            'post_parent' => $post->ID,
-            'post_type' => 'isw_product_question',
-            'orderby' => 'date',
-            'order' => 'ASC'
-        ));
-
-        foreach ( $replies as $reply ) {
-            $reply_author = get_userdata($reply->post_author);
-            $reply_author_name = $reply_author ? $reply_author->display_name : esc_html__('Admin', 'isw-product-question-answer-for-woocommerce');
-            
-            $output .= '<div class="answer"><em>' . esc_html($reply_author_name) . ' ' . esc_html__('replied:', 'isw-product-question-answer-for-woocommerce') . '</em> ' . esc_html( $reply->post_content );
-            $output .= '<br><small>' . esc_html( get_the_date('M j, Y g:i A', $reply) ) . '</small></div>';
-        }
-
-        $output .= '</div></div>';
-    }
-
-    $allowed_html = array(
-        'div' => array(
-            'class' => array()
-        ),
-        'strong' => array(),
-        'em' => array(),
-        'br' => array(),
-        'small' => array()
-    );
-    
-    echo wp_kses($output, $allowed_html);
-    wp_die();
-}
 add_action('wp_ajax_isw_pqa_load', 'isw_pqa_load_questions');
 add_action('wp_ajax_nopriv_isw_pqa_load', 'isw_pqa_load_questions');
+
+function isw_pqa_load_questions() {
+    // Add error handling
+    try {
+        // Enable error logging for debugging
+        error_log('ISW PQA: Loading questions started');
+        
+        if (!isset($_GET['product_id'])) {
+            error_log('ISW PQA: Missing product ID');
+            wp_die('Missing product ID');
+        }
+        
+        $product_id = absint( $_GET['product_id'] );
+        $offset = isset($_GET['offset']) ? absint( $_GET['offset'] ) : 0;
+        $can_answer = current_user_can('edit_others_posts');
+        $questions_per_page = isw_pqa_get_option('questions_per_page', 5);
+
+        error_log('ISW PQA: Product ID: ' . $product_id . ', Offset: ' . $offset);
+
+        $args = array(
+            'post_type' => 'isw_product_question',
+            'posts_per_page' => intval($questions_per_page),
+            'offset' => $offset,
+            'orderby' => 'date',
+            'order' => 'DESC',
+            'post_parent' => 0,
+            'post_status' => 'publish', // Only approved questions
+            'meta_query' => array(
+                array(
+                    'key' => 'product_id',
+                    'value' => $product_id,
+                    'compare' => '='
+                )
+            )
+        );
+
+        $posts = get_posts( $args );
+        error_log('ISW PQA: Found ' . count($posts) . ' questions');
+        
+        $output = '';
+
+        foreach ( $posts as $post ) {
+            $author = get_userdata($post->post_author);
+            $author_name = $author ? $author->display_name : esc_html__('User', 'isw-product-question-answer-for-woocommerce');
+
+            $output .= '<div class="qa-thread">';
+            $output .= '<div class="qa-item">';
+            $output .= '<div class="question"><strong>' . esc_html($author_name) . ' ' . esc_html__('asked:', 'isw-product-question-answer-for-woocommerce') . '</strong> ' . esc_html( $post->post_content );
+            $output .= '<br><small>' . esc_html( get_the_date('M j, Y g:i A', $post) ) . '</small></div>';
+
+            $replies = get_children(array(
+                'post_parent' => $post->ID,
+                'post_type' => 'isw_product_question',
+                'orderby' => 'date',
+                'order' => 'ASC'
+            ));
+
+            foreach ( $replies as $reply ) {
+                $reply_author = get_userdata($reply->post_author);
+                $reply_author_name = $reply_author ? $reply_author->display_name : esc_html__('Admin', 'isw-product-question-answer-for-woocommerce');
+                
+                $output .= '<div class="answer"><em>' . esc_html($reply_author_name) . ' ' . esc_html__('replied:', 'isw-product-question-answer-for-woocommerce') . '</em> ' . esc_html( $reply->post_content );
+                $output .= '<br><small>' . esc_html( get_the_date('M j, Y g:i A', $reply) ) . '</small></div>';
+            }
+
+            $output .= '</div></div>';
+        }
+
+        $allowed_html = array(
+            'div' => array(
+                'class' => array()
+            ),
+            'strong' => array(),
+            'em' => array(),
+            'br' => array(),
+            'small' => array()
+        );
+        
+        error_log('ISW PQA: About to output content');
+        echo wp_kses($output, $allowed_html);
+        
+    } catch (Exception $e) {
+        error_log('ISW PQA Error: ' . $e->getMessage());
+        echo 'Error loading questions: ' . esc_html($e->getMessage());
+    }
+    
+    wp_die();
+}
 
 // Function for getting options (for frontend and backend)
 if (!function_exists('isw_pqa_get_option')) {
@@ -478,7 +553,10 @@ add_action('wp_enqueue_scripts', function() {
         wp_localize_script('isw-pqa-ajax', 'isw_pqa_ajax', array(
             'ajax_url' => admin_url('admin-ajax.php'),
             'questions_per_page' => isw_pqa_get_option('questions_per_page', 5),
-            'btn_text_load_more' => isw_pqa_get_option('btn_text_load_more', 'Load More...')
+            'btn_text_load_more' => isw_pqa_get_option('btn_text_load_more', 'Load More...'),
+            'loading_text' => __('Loading...', 'isw-product-question-answer-for-woocommerce'),
+            'success_message' => __('Your question has been submitted successfully!', 'isw-product-question-answer-for-woocommerce'),
+            'error_message' => __('An error occurred. Please try again.', 'isw-product-question-answer-for-woocommerce')
         ));
         wp_enqueue_style(
             'isw-pqa-style',
@@ -490,3 +568,32 @@ add_action('wp_enqueue_scripts', function() {
         wp_add_inline_style('isw-pqa-style', $custom_css);
     }
 });
+
+// Add debug function for troubleshooting
+add_action('wp_ajax_isw_pqa_debug', 'isw_pqa_debug_info');
+add_action('wp_ajax_nopriv_isw_pqa_debug', 'isw_pqa_debug_info');
+
+function isw_pqa_debug_info() {
+    $debug_info = array();
+    
+    // Check if post type exists
+    $post_types = get_post_types();
+    $debug_info['post_type_exists'] = in_array('isw_product_question', $post_types);
+    
+    // Check if any questions exist
+    $questions = get_posts(array(
+        'post_type' => 'isw_product_question',
+        'post_status' => 'any',
+        'numberposts' => -1
+    ));
+    $debug_info['total_questions'] = count($questions);
+    
+    // Check plugin options
+    $options = get_option('isw_pqa_options', array());
+    $debug_info['plugin_options'] = $options;
+    
+    // Check if WooCommerce is active
+    $debug_info['woocommerce_active'] = function_exists('WC');
+    
+    wp_send_json_success($debug_info);
+}

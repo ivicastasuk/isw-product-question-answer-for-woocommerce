@@ -4,10 +4,13 @@ jQuery(function($){
     const productID = container.data('product');
     const questionsPerPage = parseInt(isw_pqa_ajax.questions_per_page) || 5;
     const loadMoreText = isw_pqa_ajax.btn_text_load_more || 'Load More...';
+    const loadingText = isw_pqa_ajax.loading_text || 'Loading...';
+    const successMessage = isw_pqa_ajax.success_message || 'Your question has been submitted successfully!';
+    const errorMessage = isw_pqa_ajax.error_message || 'An error occurred. Please try again.';
 
     function loadQuestions() {
         // Show loading text
-        $('#isw-qa-load-more').text('Loading...');
+        $('#isw-qa-load-more').text(loadingText);
         
         $.get(isw_pqa_ajax.ajax_url, {
             action: 'isw_pqa_load',
