@@ -105,7 +105,7 @@
     background: #fff;
     border: 1px solid #ccd0d4;
     border-top: none;
-    padding: 20px !important;
+    padding: 20px;
     min-height: 400px;
 }
 
@@ -162,36 +162,4 @@
     font-weight: bold;
     margin-bottom: 10px;
     color: #333;
-}
-
-/* Admin delete button styles */
-.isw-pqa-delete-section {
-    margin-top: 10px;
-    padding-top: 10px;
-    border-top: 1px solid #ddd;
-}
-
-.isw-pqa-delete-answer-btn {
-    background-color: #dc3545 !important;
-    border-color: #dc3545 !important;
-    color: #fff !important;
-    font-size: 12px;
-    padding: 4px 12px;
-}
-
-.isw-pqa-delete-answer-btn:hover {
-    background-color: #c82333 !important;
-    border-color: #bd2130 !important;
-}
-
-.isw-pqa-delete-question-btn {
-    background-color: #dc3545 !important;
-    border-color: #dc3545 !important;
-    color: #fff !important;
-    margin-top: 5px;
-}
-
-.isw-pqa-delete-question-btn:hover {
-    background-color: #c82333 !important;
-    border-color: #bd2130 !important;
 }

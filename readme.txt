@@ -8,113 +8,112 @@ Stable tag: 1.2.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Adds Q&A functionality to WooCommerce products that allows customers to ask questions about products.
+Dodaje Q&A funkcionalnost za WooCommerce proizvode koja omogućava kupcima da postavljaju pitanja o proizvodima.
 
 == Description ==
 
-ISW Product Question and Answer plugin allows customers to ask questions about WooCommerce products directly on the product page. Administrators can answer questions through an intuitive admin panel.
+ISW Product Question and Answer plugin omogućava kupcima da postavljaju pitanja o WooCommerce proizvodima direktno na stranici proizvoda. Administratori mogu da odgovaraju na pitanja kroz intuitivni admin panel.
 
-**Key Features:**
+**Ključne karakteristike:**
 
-* **Q&A tab on product pages** - Automatically integrates with WooCommerce products
-* **Admin panel for management** - Centralized management of all questions and answers
-* **Fully customizable design** - Advanced styling options
-* **Security and safety** - Implemented WordPress security practices
-* **HPOS compatibility** - Supports WooCommerce High-Performance Order Storage
-* **Responsive design** - Works on all devices
+* **Q&A tab na stranicama proizvoda** - Automatski se integriše u WooCommerce proizvode
+* **Admin panel za upravljanje** - Centralizovano upravljanje svim pitanjima i odgovorima
+* **Potpuno prilagodljiv dizajn** - Napredne opcije za stilizovanje
+* **Sigurnost i bezbednost** - Implementirane WordPress sigurnosne prakse
+* **HPOS kompatibilnost** - Podržava WooCommerce High-Performance Order Storage
+* **Responsive dizajn** - Radi na svim uređajima
 
-**Admin Features:**
+**Admin funkcionalnosti:**
 
-* View all questions by products
-* Filter questions (all/answered/unanswered)
-* Approve questions before publishing
-* Quick reply through admin interface
-* Detailed styling options
+* Pregled svih pitanja po proizvodima
+* Filtriranje pitanja (sva/odgovorena/neodgovorena)
+* Odobravanje pitanja pre objavljivanja
+* Brzo odgovaranje kroz admin interface
+* Detaljne opcije stilizovanja
 
-**Styling Options:**
+**Opcije stilizovanja:**
 
-* Typography (font, size, color, text transformation)
-* Backgrounds and containers (colors, borders, padding, margin)
-* Buttons (colors, hover effects, padding, border radius, text transform)
-* Customizable button texts
-* Live preview in admin panel
+* Tipografija (font, veličina, boja, transformacija teksta)
+* Pozadine i kontejneri (boje, borderi, padding, margin)
+* Dugmići (boje, hover efekti, padding, border radius, text transform)
+* Podesivi tekstovi dugmića
+* Live preview u admin panelu
 
-**Security:**
+**Sigurnost:**
 
-* WordPress nonce verification
-* Complete sanitization of all input data
-* wp_kses validation for HTML output
-* User permission checks
-* Escape output data
-* Input value validation and limiting
+* WordPress nonce verifikacija
+* Kompletna sanitizacija svih ulaznih podataka
+* wp_kses validacija za HTML output
+* Provera korisničkih dozvola
+* Escape output podataka
+* Validacija i ograničavanje input vrednosti
 
 == Installation ==
 
-1. Upload plugin files to `/wp-content/plugins/isw-product-question-answer-for-woocommerce/` directory
-2. Activate the plugin through the 'Plugins' menu in WordPress admin
-3. Go to Products → ISW Product Q&A → Settings for configuration
-4. The plugin will automatically add Q&A tab to all WooCommerce products
+1. Upload plugin fajlove u `/wp-content/plugins/isw-product-question-answer-for-woocommerce/` direktorijum
+2. Aktivirajte plugin kroz 'Plugins' meni u WordPress admin-u
+3. Idite na Products → ISW Product Q&A → Postavke za konfiguraciju
+4. Plugin će automatski dodati Q&A tab na sve WooCommerce proizvode
 
 == Frequently Asked Questions ==
 
-= Is WooCommerce required? =
+= Da li je potreban WooCommerce? =
 
-Yes, this plugin requires WooCommerce plugin to be installed and activated.
+Da, ovaj plugin zahteva instaliran i aktivan WooCommerce plugin.
 
-= How can I change the appearance of Q&A section? =
+= Kako mogu da promenim izgled Q&A sekcije? =
 
-Go to Products → ISW Product Q&A → Settings where you can customize typography, colors, buttons and other visual elements.
+Idite na Products → ISW Product Q&A → Postavke gde možete prilagoditi tipografiju, boje, dugmiće i ostale vizuelne elemente.
 
-= Can I moderate questions before publishing? =
+= Da li mogu da moderujem pitanja pre objavljivanja? =
 
-Yes, all new questions can be set to "pending" status and manually approved through admin panel.
+Da, sva nova pitanja se mogu postaviti na "pending" status i ručno odobriti kroz admin panel.
 
-= Does the plugin work with any theme? =
+= Da li plugin radi sa bilo kojom temom? =
 
-Yes, the plugin is designed to work with any WordPress/WooCommerce theme. Styling options allow complete customization of appearance.
+Da, plugin je dizajniran da radi sa bilo kojom WordPress/WooCommerce temom. Opcije stilizovanja omogućavaju potpuno prilagođavanje izgleda.
 
 == Screenshots ==
 
-1. Q&A tab on product page
-2. Admin panel for question management
-3. Styling options in admin panel
-4. Live button preview
+1. Q&A tab na stranici proizvoda
+2. Admin panel za upravljanje pitanjima
+3. Opcije stilizovanja u admin panelu
+4. Live preview dugmića
 
 == Changelog ==
 
 = 1.2.0 =
-* Added advanced styling options
-* Live preview functionality for buttons
-* Text transform options for buttons
-* Customizable button texts
-* Enhanced security and sanitization of all input/output data
-* Implemented complete sanitization for all settings options
-* Added wp_kses validation for HTML output
-* Removed debug code
-* Added internationalization support
-* Added HPOS (High-Performance Order Storage) compatibility
-* Changed default language from Serbian to English
+* Dodane napredne opcije stilizovanja
+* Live preview funkcionalnost za dugmiće
+* Text transform opcije za dugmiće
+* Podesivi tekstovi dugmića
+* Poboljšana sigurnost i sanitizacija svih input/output podataka
+* Implementirana kompletna sanitization za sve settings opcije
+* Dodana wp_kses validacija za HTML output
+* Uklonjen debug kod
+* Dodana internationalization podrška
+* Dodana HPOS (High-Performance Order Storage) kompatibilnost
 
 = 1.1.0 =
-* Added admin panel for question management
-* Options for approving/deleting questions
-* Improved UI/UX
-* Basic styling options
+* Dodat admin panel za upravljanje pitanjima
+* Opcije za odobravanje/brisanje pitanja
+* Poboljšan UI/UX
+* Osnovne opcije stilizovanja
 
 = 1.0.0 =
-* Initial version
-* Basic Q&A functionality
-* WooCommerce integration
+* Početna verzija
+* Osnovna Q&A funkcionalnost
+* WooCommerce integracija
 
 == Upgrade Notice ==
 
 = 1.2.0 =
-This version adds advanced styling options and improves security. Upgrade recommended.
+Ova verzija dodaje napredne opcije stilizovanja i poboljšava sigurnost. Preporučuje se ažuriranje.
 
 == Support ==
 
-For support and questions contact ISW team.
+Za podršku i pitanja kontaktirajte ISW tim.
 
 == License ==
 
-This plugin is licensed under GPLv2 or later.
+Ovaj plugin je licenciran pod GPLv2 ili novijom verzijom.

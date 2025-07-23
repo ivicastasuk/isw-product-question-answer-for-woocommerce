@@ -5,10 +5,10 @@ msgstr ""
 "Project-Id-Version: ISW Product Question and Answer for WooCommerce 1.2.0\n"
 "Report-Msgid-Bugs-To: https://isw-team.com\n"
 "POT-Creation-Date: 2025-01-01 12:00+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"PO-Revision-Date: 2025-01-01 12:00+0000\n"
+"Last-Translator: ISW Team <info@isw-team.com>\n"
+"Language-Team: English\n"
+"Language: en_US\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -17,170 +17,170 @@ msgstr ""
 
 #: admin.php:64
 msgid "Odgovor je uspešno dodat!"
-msgstr ""
+msgstr "Answer has been successfully added!"
 
 #: admin.php:67
 msgid "Pitanje je uspešno odobreno!"
-msgstr ""
+msgstr "Question has been successfully approved!"
 
 #: admin.php:70
 msgid "Pitanje je uspešno obrisano!"
-msgstr ""
+msgstr "Question has been successfully deleted!"
 
 #: admin.php:78
 msgid "Greška: Odgovor ne može biti prazan."
-msgstr ""
+msgstr "Error: Answer cannot be empty."
 
 #: admin.php:81
 msgid "Greška: Nedostaju potrebni podaci."
-msgstr ""
+msgstr "Error: Required data is missing."
 
 #: admin.php:84
 msgid "Greška: Pitanje ne postoji ili je neispravno."
-msgstr ""
+msgstr "Error: Question does not exist or is invalid."
 
 #: admin.php:87
 msgid "Greška: Kreiranje odgovora nije uspelo."
-msgstr ""
+msgstr "Error: Failed to create answer."
 
 #: admin.php:90
 msgid "Greška: Ažuriranje pitanja nije uspelo."
-msgstr ""
+msgstr "Error: Failed to update question."
 
 #: admin.php:93
 msgid "Greška: Brisanje pitanja nije uspelo."
-msgstr ""
+msgstr "Error: Failed to delete question."
 
 #: admin.php:96
 #. translators: %s is the error message returned by the system
 #, php-format
 msgid "Desila se neočekivana greška: %s"
-msgstr ""
+msgstr "An unexpected error occurred: %s"
 
 #: admin.php:279
 msgid "Morate biti prijavljeni."
-msgstr ""
+msgstr "You must be logged in."
 
 #: admin.php:279
 msgid "Neovlašćen pristup"
-msgstr ""
+msgstr "Unauthorized access"
 
 #: admin.php:286
 msgid "Nemate dozvolu za ovu akciju."
-msgstr ""
+msgstr "You don't have permission for this action."
 
 #: admin.php:290
 msgid "Sigurnosna provera neuspešna."
-msgstr ""
+msgstr "Security check failed."
 
 #: admin.php:290
 msgid "Neispravna sigurnosna provera"
-msgstr ""
+msgstr "Invalid security check"
 
 #: admin.php:342
 msgid "Nedozvoljen pristup"
-msgstr ""
+msgstr "Access denied"
 
 #: admin.php:402
 msgid "Morate biti prijavljeni kao administrator da biste odgovorili na pitanja."
-msgstr ""
+msgstr "You must be logged in as administrator to answer questions."
 
 #: isw-product-question-answer-for-woocommerce.php:59
 msgid "ISW Product Q&A zahteva WordPress verziju 5.0 ili noviju."
-msgstr ""
+msgstr "ISW Product Q&A requires WordPress version 5.0 or newer."
 
 #: isw-product-question-answer-for-woocommerce.php:60
 #: isw-product-question-answer-for-woocommerce.php:70
 #: isw-product-question-answer-for-woocommerce.php:80
 msgid "Plugin greška"
-msgstr ""
+msgstr "Plugin error"
 
 #: isw-product-question-answer-for-woocommerce.php:69
 msgid "ISW Product Q&A zahteva PHP verziju 7.4 ili noviju."
-msgstr ""
+msgstr "ISW Product Q&A requires PHP version 7.4 or newer."
 
 #: isw-product-question-answer-for-woocommerce.php:79
 msgid "ISW Product Q&A zahteva instaliran i aktiviran WooCommerce plugin."
-msgstr ""
+msgstr "ISW Product Q&A requires WooCommerce plugin to be installed and activated."
 
 #: isw-product-question-answer-for-woocommerce.php:102
 #. translators: %s is the string "WooCommerce" formatted in bold
 #, php-format
 msgid "ISW Product Q&A zahteva %s da bi radilo correctly. Molimo instalirajte i aktivirajte WooCommerce."
-msgstr ""
+msgstr "ISW Product Q&A requires %s to work correctly. Please install and activate WooCommerce."
 
 #: isw-product-question-answer-for-woocommerce.php:163
 msgid "Vaše pitanje..."
-msgstr ""
+msgstr "Your question..."
 
 #: isw-product-question-answer-for-woocommerce.php:172
 msgid "Morate biti prijavljeni da biste postavili pitanje."
-msgstr ""
+msgstr "You must be logged in to ask a question."
 
 #: isw-product-question-answer-for-woocommerce.php:190
 msgid "Odgovor"
-msgstr ""
+msgstr "Answer"
 
 #: isw-product-question-answer-for-woocommerce.php:199
 msgid "Odgovor je sačuvan."
-msgstr ""
+msgstr "Answer has been saved."
 
 #: isw-product-question-answer-for-woocommerce.php:213
 msgid "Pitanje"
-msgstr ""
+msgstr "Question"
 
 #: isw-product-question-answer-for-woocommerce.php:225
 msgid "Nepoznat proizvod"
-msgstr ""
+msgstr "Unknown product"
 
 #: isw-product-question-answer-for-woocommerce.php:228
 #. translators: %s is the product name
 #, php-format
 msgid "Novo pitanje na proizvodu: %s"
-msgstr ""
+msgstr "New question on product: %s"
 
 #: isw-product-question-answer-for-woocommerce.php:229
 #. translators: %s is the user's display name
 #, php-format
 msgid "Korisnik %s je postavio novo pitanje:"
-msgstr ""
+msgstr "User %s asked a new question:"
 
 #: isw-product-question-answer-for-woocommerce.php:230
 #. translators: %s is the product name
 #, php-format
 msgid "Proizvod: %s"
-msgstr ""
+msgstr "Product: %s"
 
 #: isw-product-question-answer-for-woocommerce.php:231
 #. translators: %s is the question text
 #, php-format
 msgid "Pitanje: %s"
-msgstr ""
+msgstr "Question: %s"
 
 #: isw-product-question-answer-for-woocommerce.php:232
 msgid "Odgovorite na:"
-msgstr ""
+msgstr "Reply at:"
 
 #: isw-product-question-answer-for-woocommerce.php:237
 msgid "Pitanje je sačuvano."
-msgstr ""
+msgstr "Question has been saved."
 
 #: isw-product-question-answer-for-woocommerce.php:237
 msgid "Pitanje je poslato na odobravanje."
-msgstr ""
+msgstr "Question has been sent for approval."
 
 #: isw-product-question-answer-for-woocommerce.php:271
 msgid "Korisnik"
-msgstr ""
+msgstr "User"
 
 #: isw-product-question-answer-for-woocommerce.php:275
 msgid "postavio pitanje:"
-msgstr ""
+msgstr "asked a question:"
 
 #: isw-product-question-answer-for-woocommerce.php:286
 msgid "Admin"
-msgstr ""
+msgstr "Admin"
 
 #: isw-product-question-answer-for-woocommerce.php:287
 msgid "odgovorio:"
-msgstr ""
+msgstr "replied:"
